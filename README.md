@@ -179,6 +179,61 @@ This repository includes a GitHub Actions workflow that automatically builds and
    docker-compose -f docker-compose.prod.yml down
    ```
 
+### Using the Deployment Script
+
+A deployment script is included to simplify the deployment process:
+
+#### On Linux/macOS:
+
+1. Make the script executable:
+   ```bash
+   chmod +x deploy.sh
+   ```
+
+2. Run the script:
+   ```bash
+   # For development environment
+   ./deploy.sh dev
+
+   # For production environment
+   ./deploy.sh prod
+   ```
+
+#### On Windows:
+
+1. Using the PowerShell script:
+   ```powershell
+   # For development environment
+   .\deploy.ps1 dev
+
+   # For production environment
+   .\deploy.ps1 prod
+   ```
+
+2. Using bash if available:
+   ```powershell
+   # For development environment
+   bash deploy.sh dev
+   # or
+   sh deploy.sh dev
+
+   # For production environment
+   bash deploy.sh prod
+   # or
+   sh deploy.sh prod
+   ```
+
+3. If neither script works, you can run the equivalent commands directly:
+   ```powershell
+   # For development environment
+   docker-compose down
+   docker-compose up -d
+
+   # For production environment
+   docker-compose -f docker-compose.prod.yml down
+   docker-compose -f docker-compose.prod.yml up -d
+   ```
+
 ### Environment Variables
 
 Make sure to set up your environment variables in a `.env` file:
