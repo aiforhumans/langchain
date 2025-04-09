@@ -98,6 +98,8 @@ This project includes Docker configuration for easy deployment.
 
 ### Publishing to GitHub Container Registry
 
+#### Manual Publishing
+
 1. Log in to GitHub Container Registry:
    ```bash
    echo $GITHUB_TOKEN | docker login ghcr.io -u aiforhumans --password-stdin
@@ -117,6 +119,23 @@ This project includes Docker configuration for easy deployment.
    ```bash
    docker pull ghcr.io/aiforhumans/langchain-app:latest
    ```
+
+#### Automated Publishing with GitHub Actions
+
+This repository includes a GitHub Actions workflow that automatically builds and pushes the Docker image to GitHub Container Registry whenever you push to the main branch or create a new tag.
+
+1. The workflow is defined in `.github/workflows/docker-build.yml`
+2. It builds the Docker image and pushes it to `ghcr.io/aiforhumans/langchain-app`
+3. Images are tagged based on:
+   - Git tags (e.g., `v1.0.0`)
+   - Branch name (for pushes to branches)
+   - Commit SHA (for all pushes)
+   - `latest` tag for the most recent push to main
+
+4. To use the GitHub Actions workflow:
+   - Push your changes to the main branch
+   - Create and push a tag for releases: `git tag v1.0.0 && git push --tags`
+   - The image will be available at `ghcr.io/aiforhumans/langchain-app:latest`
 
 ### Using Docker Compose
 

@@ -2,9 +2,12 @@ version: '3.8'
 
 services:
   langchain-app:
+    # Option 1: Build from local Dockerfile
     build:
       context: .
       dockerfile: Dockerfile
+    # Option 2: Use pre-built image from GitHub Container Registry
+    # image: ghcr.io/aiforhumans/langchain-app:latest
     container_name: langchain-app
     volumes:
       - ./:/app
@@ -16,3 +19,6 @@ services:
     ports:
       - "8000:8000"  # Adjust if your app exposes any ports
     restart: unless-stopped
+    # Uncomment to use .env file for environment variables
+    env_file:
+      - .env
