@@ -1,162 +1,119 @@
-# LangChain Chat Models and LangSmith Examples
+# LangChain Project with LM Studio Integration
 
-This repository contains examples of using LangChain chat models with different invocation methods, streaming capabilities, and LangSmith integration for tracing and debugging.
+This repository contains a structured project for building AI agents with LangChain and LM Studio, featuring different agent architectures, tools, and examples.
 
-## Files
+## Project Structure
 
-- `main.py`: Demonstrates different ways to invoke chat models and streaming capabilities
-- `langsmith_example.py`: Shows a more complex chain with LangSmith tracing
+```
+langchain/
+├── src/                    # Source code
+│   ├── agents/             # Agent implementations
+│   │   ├── single_agent.py # Single agent implementation
+│   │   └── team_agent.py   # Team of specialized agents
+│   ├── examples/           # Example scripts
+│   │   ├── chat_model_example.py  # Chat model usage examples
+│   │   └── langsmith_example.py   # LangSmith tracing example
+│   └── tools/              # Tool implementations
+│       ├── search_tools.py # Web search tools
+│       ├── math_tools.py   # Math calculation tools
+│       └── weather_tools.py # Weather information tools
+├── docs/                   # Documentation
+│   ├── agent_docs.md       # Single agent documentation
+│   └── team_agent_docs.md  # Team agent documentation
+├── docker/                 # Docker-related files
+│   ├── Dockerfile          # Docker image definition
+│   ├── docker-compose.yml  # Development compose file
+│   ├── docker-compose.prod.yml # Production compose file
+│   └── entrypoint.sh       # Container entrypoint script
+└── scripts/                # Utility scripts
+    ├── deploy.ps1          # Windows deployment script
+    └── deploy.sh           # Linux/macOS deployment script
+```
 
-## Chat Model Invocation Methods
+## Features
 
-LangChain chat models can be invoked in multiple ways:
+- **Agent Architectures**:
+  - Single agent with multiple tools
+  - Team of specialized agents with a router
 
-1. Using a simple string:
-   ```python
-   model.invoke("Hello")
-   ```
+- **Tools**:
+  - Web search (mock implementation)
+  - Weather information (mock implementation)
+  - Math calculations
 
-2. Using OpenAI format:
-   ```python
-   model.invoke([{"role": "user", "content": "Hello"}])
-   ```
+- **Examples**:
+  - Chat model invocation methods
+  - Streaming capabilities
+  - LangSmith tracing
 
-3. Using LangChain message objects:
-   ```python
-   model.invoke([HumanMessage("Hello")])
-   ```
+- **Docker Support**:
+  - Development and production configurations
+  - GitHub Container Registry integration
 
-## Streaming Capabilities
+## Getting Started
 
-LangChain supports multiple streaming methods:
+### Prerequisites
 
-1. Synchronous streaming:
-   ```python
-   for token in model.stream("Hello"):
-       print(token.content, end="|")
-   ```
+- Python 3.8+
+- LM Studio installed and running with a local server
+- Docker (optional, for containerized deployment)
 
-2. Asynchronous streaming:
-   ```python
-   async for token in model.astream("Hello"):
-       print(token.content, end="|")
-   ```
+### Installation
 
-3. Streaming events:
-   ```python
-   async for event in model.astream_events("Hello"):
-       print(event)
-   ```
-
-## LangSmith Integration
-
-LangSmith provides tracing and debugging capabilities for LangChain applications.
-
-### Setup
-
-1. Sign up at [LangSmith](https://smith.langchain.com/)
-2. Set environment variables:
+1. Clone the repository:
    ```bash
-   export LANGSMITH_TRACING="true"
-   export LANGSMITH_API_KEY="your-api-key"
-   export LANGSMITH_PROJECT="default"  # or any project name
+   git clone https://github.com/aiforhumans/langchain.git
+   cd langchain
    ```
+
+2. Create a virtual environment:
+   ```bash
+   python -m venv .venv
+   source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+   ```
+
+3. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. Start LM Studio and run a local server on port 1234
 
 ### Running the Examples
 
-1. Basic chat model examples:
-   ```bash
-   python main.py
-   ```
+#### Chat Model Example
+```bash
+python -m src.examples.chat_model_example
+```
 
-2. LangSmith tracing with a chain:
-   ```bash
-   python langsmith_example.py
-   ```
+#### LangSmith Example
+```bash
+python -m src.examples.langsmith_example
+```
 
-## Requirements
+### Running the Agents
 
-- Python 3.8+
-- LangChain
-- OpenAI API key (for `langsmith_example.py` using OpenAI) or a local model server like LM Studio
+#### Single Agent
+```bash
+python -m src.agents.single_agent
+```
+
+#### Team Agent
+```bash
+python -m src.agents.team_agent
+```
 
 ## Docker Deployment
 
-This project includes Docker configuration for easy deployment.
-
-### Building and Running with Docker
-
-1. Build the Docker image:
-   ```bash
-   docker build -t langchain-app .
-   ```
-
-2. Run the container:
-   ```bash
-   docker run -it --env-file .env langchain-app
-   ```
-
-### Publishing to GitHub Container Registry
-
-#### Manual Publishing
-
-1. Log in to GitHub Container Registry:
-   ```bash
-   echo $GITHUB_TOKEN | docker login ghcr.io -u aiforhumans --password-stdin
-   ```
-
-2. Tag the image for GitHub Container Registry:
-   ```bash
-   docker tag langchain-app ghcr.io/aiforhumans/langchain-app:latest
-   ```
-
-3. Push the image to GitHub Container Registry:
-   ```bash
-   docker push ghcr.io/aiforhumans/langchain-app:latest
-   ```
-
-4. Pull the image on another machine:
-   ```bash
-   docker pull ghcr.io/aiforhumans/langchain-app:latest
-   ```
-
-#### Automated Publishing with GitHub Actions
-
-This repository includes a GitHub Actions workflow that automatically builds and pushes the Docker image to GitHub Container Registry whenever you push to the main branch or create a new tag.
-
-1. The workflow is defined in `.github/workflows/docker-build.yml`
-2. It builds the Docker image and pushes it to `ghcr.io/aiforhumans/langchain-app`
-3. Images are tagged based on:
-   - Git tags (e.g., `v1.0.0`)
-   - Branch name (for pushes to branches)
-   - Commit SHA (for all pushes)
-   - `latest` tag for the most recent push to main
-
-4. To use the GitHub Actions workflow:
-   - Push your changes to the main branch
-   - Create and push a tag for releases: `git tag v1.0.0 && git push --tags`
-   - The image will be available at `ghcr.io/aiforhumans/langchain-app:latest`
-
-### Using Docker Compose
-
-#### Development Environment
+### Development Environment
 
 1. Start the application in development mode:
    ```bash
-   docker-compose up -d
+   ./scripts/deploy.sh dev
+   # On Windows: .\scripts\deploy.ps1 dev
    ```
 
-2. View logs:
-   ```bash
-   docker-compose logs -f
-   ```
-
-3. Stop the application:
-   ```bash
-   docker-compose down
-   ```
-
-#### Production Environment
+### Production Environment
 
 1. Create a production environment file:
    ```bash
@@ -166,82 +123,38 @@ This repository includes a GitHub Actions workflow that automatically builds and
 
 2. Start the application in production mode:
    ```bash
-   docker-compose -f docker-compose.prod.yml up -d
+   ./scripts/deploy.sh prod
+   # On Windows: .\scripts\deploy.ps1 prod
    ```
 
-3. View production logs:
+## Publishing to GitHub Container Registry
+
+### Manual Publishing
+
+1. Log in to GitHub Container Registry:
    ```bash
-   docker-compose -f docker-compose.prod.yml logs -f
+   echo $GITHUB_TOKEN | docker login ghcr.io -u aiforhumans --password-stdin
    ```
 
-4. Stop the production application:
+2. Tag the image:
    ```bash
-   docker-compose -f docker-compose.prod.yml down
+   docker tag langchain-app ghcr.io/aiforhumans/langchain-app:latest
    ```
 
-### Using the Deployment Script
-
-A deployment script is included to simplify the deployment process:
-
-#### On Linux/macOS:
-
-1. Make the script executable:
+3. Push the image:
    ```bash
-   chmod +x deploy.sh
+   docker push ghcr.io/aiforhumans/langchain-app:latest
    ```
 
-2. Run the script:
-   ```bash
-   # For development environment
-   ./deploy.sh dev
+### Automated Publishing with GitHub Actions
 
-   # For production environment
-   ./deploy.sh prod
-   ```
+This repository includes a GitHub Actions workflow that automatically builds and pushes the Docker image to GitHub Container Registry whenever you push to the main branch or create a new tag.
 
-#### On Windows:
+## Documentation
 
-1. Using the PowerShell script:
-   ```powershell
-   # For development environment
-   .\deploy.ps1 dev
+- [Single Agent Documentation](docs/agent_docs.md)
+- [Team Agent Documentation](docs/team_agent_docs.md)
 
-   # For production environment
-   .\deploy.ps1 prod
-   ```
+## License
 
-2. Using bash if available:
-   ```powershell
-   # For development environment
-   bash deploy.sh dev
-   # or
-   sh deploy.sh dev
-
-   # For production environment
-   bash deploy.sh prod
-   # or
-   sh deploy.sh prod
-   ```
-
-3. If neither script works, you can run the equivalent commands directly:
-   ```powershell
-   # For development environment
-   docker-compose down
-   docker-compose up -d
-
-   # For production environment
-   docker-compose -f docker-compose.prod.yml down
-   docker-compose -f docker-compose.prod.yml up -d
-   ```
-
-### Environment Variables
-
-Make sure to set up your environment variables in a `.env` file:
-
-```
-LANGSMITH_TRACING=true
-LANGSMITH_API_KEY=your-api-key
-LANGSMITH_PROJECT=default
-```
-
-**Note:** The `.env` file is included in `.gitignore` to prevent sensitive information from being committed to the repository.
+MIT

@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  langchain-app:
+    # Use pre-built image from GitHub Container Registry for production
+    image: ghcr.io/aiforhumans/langchain-app:latest
+    container_name: langchain-app-prod
+    restart: always
+    environment:
+      - LANGSMITH_TRACING=true
+      - LANGSMITH_PROJECT=production
+    env_file:
+      - .env.prod
+    ports:
+      - "8000:8000"  # Adjust if your app exposes any ports
+    # No volumes mounted in production to use the code inside the container
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+      restart_policy:
+        condition: any
+        delay: 5s
+        max_attempts: 3
+        window: 120s
