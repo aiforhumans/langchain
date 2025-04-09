@@ -1,0 +1,10 @@
+# Chat model
+# See a usage example.
+
+from langchain_openai import ChatOpenAI
+
+llm = ChatOpenAI(
+    model_name="local-model",  # This can be any name
+    openai_api_base="http://localhost:1234/v1",  # Default LM Studio port
+    openai_api_key="not-needed"  # LM Studio doesn't need a real key
+)

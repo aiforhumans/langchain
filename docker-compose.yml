@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  langchain-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: langchain-app
+    volumes:
+      - ./:/app
+    environment:
+      - LANGSMITH_TRACING=true
+      - LANGSMITH_PROJECT=default
+      # API key should be provided via .env file or environment variables
+      # - LANGSMITH_API_KEY=your-api-key
+    ports:
+      - "8000:8000"  # Adjust if your app exposes any ports
+    restart: unless-stopped
