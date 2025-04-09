@@ -139,7 +139,9 @@ This repository includes a GitHub Actions workflow that automatically builds and
 
 ### Using Docker Compose
 
-1. Start the application:
+#### Development Environment
+
+1. Start the application in development mode:
    ```bash
    docker-compose up -d
    ```
@@ -152,6 +154,29 @@ This repository includes a GitHub Actions workflow that automatically builds and
 3. Stop the application:
    ```bash
    docker-compose down
+   ```
+
+#### Production Environment
+
+1. Create a production environment file:
+   ```bash
+   cp .env.prod.example .env.prod
+   # Edit .env.prod with your actual production values
+   ```
+
+2. Start the application in production mode:
+   ```bash
+   docker-compose -f docker-compose.prod.yml up -d
+   ```
+
+3. View production logs:
+   ```bash
+   docker-compose -f docker-compose.prod.yml logs -f
+   ```
+
+4. Stop the production application:
+   ```bash
+   docker-compose -f docker-compose.prod.yml down
    ```
 
 ### Environment Variables
